@@ -28,9 +28,18 @@ class QuestionTextState extends State<QuestionText>
     // this values goes from 0.0 0.1 0.2 . . . 0.8 0.9 1.0
     _fontSizeAnimation = CurvedAnimation(
         parent: _fontSizeanimationController, curve: Curves.bounceOut);
-    _fontSizeAnimation.addListener(() {setState(() {});});
+    _fontSizeAnimation.addListener(() {
+      setState(() {});
+    });
     _fontSizeanimationController.forward();
     super.initState();
+  }
+
+// This is important to dispose the animations controller and free the resources.
+  @override
+  void dispose() {
+    super.dispose();
+    _fontSizeanimationController.dispose();
   }
 
   @override
@@ -45,10 +54,10 @@ class QuestionTextState extends State<QuestionText>
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white70,
+      color: Colors.white,
       child: Padding(
           padding: EdgeInsets.symmetric(vertical: 20.0),
-          child: Container(
+          child: Center(
             // This is known as String interpolation also use ${3+5} for more complex ones
             child: Text(
               'Statement ${widget._questionIdx} : ${widget._question}',

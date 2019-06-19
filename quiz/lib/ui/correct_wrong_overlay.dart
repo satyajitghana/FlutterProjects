@@ -34,6 +34,12 @@ class CorrectWrongOverlayState extends State<CorrectWrongOverlay>
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _iconAnimationController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.black54,

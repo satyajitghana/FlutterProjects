@@ -4,6 +4,7 @@ import 'package:quiz/ui/quiz_text.dart';
 import 'package:quiz/ui/correct_wrong_overlay.dart';
 import 'package:quiz/utils/questions.dart';
 import 'package:quiz/utils/quiz.dart';
+import 'package:quiz/pages/score_page.dart';
 
 // A Stateful Widget is a UI Component that can update when there are state changes
 // every StatefulWidget is connected to a State, the Stateful Widget can only contain final values,
@@ -17,7 +18,6 @@ class QuizPage extends StatefulWidget {
 // This is the State that is bound to the above StatefulWdiget
 // the implementation is similar to that of a StatelessWidget
 class QuizPageState extends State<QuizPage> {
-
   Question currQuestion;
   Quiz quiz = Quiz([
     Question(question: 'Elon Musk is Human', answer: false),
@@ -66,15 +66,24 @@ class QuizPageState extends State<QuizPage> {
             })
           ],
         ),
-        feedbackVisible ? CorrectWrongOverlay(
-          isCorrect, () {
-            currQuestion = quiz.nextQuestion;
-            setState(() {
-              feedbackVisible = false;
-              questionText = currQuestion.question;
-              questionIdx = quiz.questionsIdx;
-            });
-        }) : Container()
+        feedbackVisible
+            ? CorrectWrongOverlay(isCorrect, () {
+                if (quiz.length == questionIdx) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (BuildContext contest) =>
+                              ScorePage(quiz.score, quiz.length)),
+                      (Route route) => route == null);
+                  return;
+                }
+                currQuestion = quiz.nextQuestion;
+                setState(() {
+                  feedbackVisible = false;
+                  questionText = currQuestion.question;
+                  questionIdx = quiz.questionsIdx;
+                });
+              })
+            : Container()
       ],
     );
   }
