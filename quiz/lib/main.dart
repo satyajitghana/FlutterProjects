@@ -5,8 +5,6 @@ import './pages/quiz_page.dart';
 // MaterialApp creates the basic structure of the App, of placement of stuffs
 void main() {
   runApp(MaterialApp(
-    home: Scaffold(
-      body: QuizPage(),
-    ),
+    home: LandingPage(),
   ));
 }

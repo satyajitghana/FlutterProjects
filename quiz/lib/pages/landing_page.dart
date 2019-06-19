@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quiz/pages/quiz_page.dart';
 
 // This is the Landing Page that contains the main UI,
 // the InkWell is basically the whole page as a button, it gives that ink'ed animation when tapped
@@ -10,6 +11,8 @@ class LandingPage extends StatelessWidget {
       color: Colors.greenAccent,
       child: InkWell(
         onTap: () {
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (BuildContext context) => QuizPage()));
           print('You Tapped the page');
         },
         child: Column(
