@@ -67,7 +67,7 @@ class Weather extends Equatable {
     final consolidatedWeather = json['consolidated_weather'][0];
     return Weather(
       condition: _mapStringToWeatherCondition(consolidatedWeather['weather_state_abbr']),
-      formattedCondition: consolidatedWeather['weather_condition_name'],
+      formattedCondition: consolidatedWeather['weather_state_name'],
       minTemp: consolidatedWeather['min_temp'] as double,
       theTemp: consolidatedWeather['the_temp'] as double,
       maxTemp: consolidatedWeather['max_temp'] as double,
@@ -79,6 +79,7 @@ class Weather extends Equatable {
       visibility: consolidatedWeather['visibility'] as double,
       created: consolidatedWeather['created'],
       lastUpdated: DateTime.now(),
+      location: json['title'],
     );
   }
 

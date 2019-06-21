@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:bloc/bloc.dart';
+
 import 'package:flutter_weather/repositories/repositories.dart';
+import 'package:flutter_weather/widgets/widgets.dart';
+import 'package:flutter_weather/blocs/blocs.dart';
 
 class SimpleBlocDelegate extends BlocDelegate {
   @override
@@ -13,26 +16,26 @@ class SimpleBlocDelegate extends BlocDelegate {
 }
 
 void main() {
-  BlockSupervisor.delegate = SimpleBlocDelegate();
+  BlocSupervisor.delegate = SimpleBlocDelegate();
 
   final WeatherRepository weatherRepository = WeatherRepository(
     weatherApiClient: WeatherApiClient(httpClient: http.Client())
   );
 
-  runApp(App());
+  runApp(App(weatherRepository: weatherRepository,));
 }
 
 class App extends StatelessWidget {
 
   final WeatherRepository weatherRepository;
 
-  const App({Key key, @required this.weatherRepository) : assert(weatherRepository != null), super(key: key);
+  const App({Key key, @required this.weatherRepository}) : assert(weatherRepository != null), super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Weather',
-      home: BlocProvider(
+      home: BlocProvider (
         builder: (BuildContext context) => WeatherBloc(weatherRepository: weatherRepository),
         child: Weather(),
       ),
