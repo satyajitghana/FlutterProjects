@@ -1,63 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ruas_connect/login/login.dart';
 
-void main() => runApp(MyApp());
+import 'package:ruas_connect/repository/user_repository.dart';
+import 'authentication_bloc/bloc.dart';
+import 'package:ruas_connect/simple_bloc_delegate.dart';
+import 'package:ruas_connect/splash_screen.dart';
+import 'package:ruas_connect/home_screen.dart';
+
+void main() {
+  BlocSupervisor.delegate = SimpleBlocDelegate();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
+
+  final UserRepository userRepository = UserRepository();
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page Meow Meow'),
+    return BlocProvider(
+      builder: (BuildContext context) => AuthenticationBloc(userRepository: userRepository)
+        ..dispatch(AppStarted()),
+      child: App(userRepository: userRepository),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class App extends StatelessWidget {
 
-  final String title;
+  final UserRepository _userRepository;
 
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  const App({Key key, @required UserRepository userRepository }) : assert(userRepository != null) ,_userRepository = userRepository, super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
+    return MaterialApp(
+      home: BlocBuilder(
+        bloc: BlocProvider.of<AuthenticationBloc>(context),
+        builder: (BuildContext context, AuthenticationState state) {
+          if (state is Uninitialized) {
+            return SplashScreen();
+          }
+          if (state is Authenticated) {
+            return HomeScreen(name: state.displayName,);
+          }
+          if (state is Unauthenticated) {
+            return LoginScreen(userRepository: _userRepository,);
+          }
+        },
+      )
     );
   }
 }
