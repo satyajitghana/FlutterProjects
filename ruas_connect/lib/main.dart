@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       builder: (BuildContext context) =>
           AuthenticationBloc(userRepository: userRepository)
             ..dispatch(AppStarted()),
-      child: App(userRepository: userRepository),
+      child: App(userRepository: userRepository, courseRepository: coursesRepository,),
     );
   }
 }

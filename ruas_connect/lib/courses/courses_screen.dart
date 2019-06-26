@@ -1,42 +1,101 @@
 import 'package:flutter/material.dart';
+import 'package:ruas_connect/repository/respository.dart';
+import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ruas_connect/courses/bloc/bloc.dart';
 
 class CoursesScreen extends StatelessWidget {
+  final CoursesRepository coursesRepository = CoursesRepository();
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(5.0),
-      color: Colors.black12,
-      child: Column(
-        children: <Widget>[
-          Card(
-            child: InkWell(
-              onTap: () {},
-              child: Container(
-                child: ListTile(
-                  leading: Container(
-                    padding: EdgeInsets.only(right: 12.0),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        right: BorderSide(
-                          width: 2.0,
-                          color: Colors.white30,
-                        ),
-                      ),
-                    ),
-                    child: FlutterLogo(
-                      size: 40.0,
-                    ),
+    return BlocProvider(
+        builder: (context) => CoursesBloc(coursesRepository: coursesRepository),
+        child: CoursesCards());
+  }
+}
+
+class CoursesCards extends StatelessWidget {
+  const CoursesCards({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final CoursesBloc _coursesBloc = BlocProvider.of<CoursesBloc>(context);
+
+    return BlocBuilder(
+      bloc: _coursesBloc,
+      builder: (context, CoursesState state) {
+        if (state is Uninitialized) {
+          _coursesBloc.dispatch(LoadCourses('CSE', 'SEMESTER_02'));
+          return Text('Loading');
+        }
+
+        if (state is CoursesLoading) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        if (state is CoursesLoaded) {
+          // return Text((state.coursesList).toString());
+          List<Widget> courses = [];
+          state.coursesList.forEach((key, val) {
+            courses.add(CourseCard(
+              courseCode: key,
+              courseName: val,
+            ));
+          });
+          return Container(
+            padding: EdgeInsets.all(5.0),
+            color: Colors.black12,
+            child: Column(
+              children: courses,
+            ),
+          );
+        }
+
+        if (state is CoursesLoadError) {
+          return Center(
+            child: Text('Loading Error'),
+          );
+        }
+      },
+    );
+  }
+}
+
+class CourseCard extends StatelessWidget {
+  final String courseCode, courseName;
+
+  const CourseCard({Key key, this.courseCode, this.courseName})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: InkWell(
+        onTap: () {},
+        child: Container(
+          child: ListTile(
+            leading: Container(
+              padding: EdgeInsets.only(right: 12.0),
+              decoration: BoxDecoration(
+                border: Border(
+                  right: BorderSide(
+                    width: 2.0,
+                    color: Colors.white30,
                   ),
-                  title: Text('Engineering Mathematics'),
-                  subtitle: Text('BSC208A'),
                 ),
               ),
+              child: Image.asset('assets/cat.png'),
             ),
-            elevation: 8.0,
-            margin: EdgeInsets.all(8.0),
-          )
-        ],
+            title: Text(courseName),
+            subtitle: Text(courseCode),
+          ),
+        ),
       ),
+      elevation: 8.0,
+      margin: EdgeInsets.all(8.0),
     );
   }
 }
