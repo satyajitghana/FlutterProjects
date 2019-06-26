@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ruas_connect/login/login.dart';
+import 'package:ruas_connect/page_navigation.dart';
 
 import 'package:ruas_connect/repository/user_repository.dart';
 import 'authentication_bloc/bloc.dart';
@@ -11,7 +12,9 @@ import 'package:ruas_connect/home_screen.dart';
 
 void main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
-  runApp(MyApp());
+  runApp(MaterialApp(
+    home: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -37,6 +40,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData.dark(),
       home: BlocBuilder(
         bloc: BlocProvider.of<AuthenticationBloc>(context),
         builder: (BuildContext context, AuthenticationState state) {
@@ -44,7 +48,9 @@ class App extends StatelessWidget {
             return SplashScreen();
           }
           if (state is Authenticated) {
-            return HomeScreen(name: state.displayName,);
+//            return HomeScreen(name: state.displayName,);
+          return PageNavigation();
+//          return MyHomePage(title: 'Ho',);
           }
           if (state is Unauthenticated) {
             return LoginScreen(userRepository: _userRepository,);
