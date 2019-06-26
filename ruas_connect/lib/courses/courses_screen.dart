@@ -3,6 +3,7 @@ import 'package:ruas_connect/repository/respository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ruas_connect/courses/bloc/bloc.dart';
+import 'courses.dart';
 
 class CoursesScreen extends StatelessWidget {
   final CoursesRepository coursesRepository = CoursesRepository();
@@ -45,6 +46,7 @@ class CoursesCards extends StatelessWidget {
               courseName: val,
             ));
           });
+
           return Container(
             padding: EdgeInsets.all(5.0),
             color: Colors.black12,
@@ -74,7 +76,14 @@ class CourseCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CourseArena(courseCode: courseCode),
+            ),
+          );
+        },
         child: Container(
           child: ListTile(
             leading: Container(
