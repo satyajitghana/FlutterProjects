@@ -71,6 +71,7 @@ class _BottomNavigationState extends State<PageNavigation> {
         ],
       ),
       body: PageView(
+        physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: onPageChanged,
         children: <Widget>[

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ruas_connect/login/login.dart';
 import 'package:ruas_connect/page_navigation.dart';
 
-import 'package:ruas_connect/repository/user_repository.dart';
+import 'package:ruas_connect/repository/respository.dart';
 import 'authentication_bloc/bloc.dart';
 import 'package:ruas_connect/simple_bloc_delegate.dart';
 import 'package:ruas_connect/splash_screen.dart';
@@ -18,45 +18,55 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-
   final UserRepository userRepository = UserRepository();
+  final CoursesRepository coursesRepository = CoursesRepository();
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      builder: (BuildContext context) => AuthenticationBloc(userRepository: userRepository)
-        ..dispatch(AppStarted()),
+      builder: (BuildContext context) =>
+          AuthenticationBloc(userRepository: userRepository)
+            ..dispatch(AppStarted()),
       child: App(userRepository: userRepository),
     );
   }
 }
 
 class App extends StatelessWidget {
-
   final UserRepository _userRepository;
+  final CoursesRepository _coursesRepository;
 
-  const App({Key key, @required UserRepository userRepository }) : assert(userRepository != null) ,_userRepository = userRepository, super(key: key);
+  const App(
+      {Key key,
+      @required UserRepository userRepository,
+      @required CoursesRepository courseRepository})
+      : assert(userRepository != null),
+        assert(courseRepository != null),
+        _userRepository = userRepository,
+        _coursesRepository = courseRepository,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.dark(),
-      home: BlocBuilder(
-        bloc: BlocProvider.of<AuthenticationBloc>(context),
-        builder: (BuildContext context, AuthenticationState state) {
-          if (state is Uninitialized) {
-            return SplashScreen();
-          }
-          if (state is Authenticated) {
+        theme: ThemeData.dark(),
+        home: BlocBuilder(
+          bloc: BlocProvider.of<AuthenticationBloc>(context),
+          builder: (BuildContext context, AuthenticationState state) {
+            if (state is Uninitialized) {
+              return SplashScreen();
+            }
+            if (state is Authenticated) {
 //            return HomeScreen(name: state.displayName,);
-          return PageNavigation();
+              return PageNavigation();
 //          return MyHomePage(title: 'Ho',);
-          }
-          if (state is Unauthenticated) {
-            return LoginScreen(userRepository: _userRepository,);
-          }
-        },
-      )
-    );
+            }
+            if (state is Unauthenticated) {
+              return LoginScreen(
+                userRepository: _userRepository,
+              );
+            }
+          },
+        ));
   }
 }

@@ -10,19 +10,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: EdgeInsets.all(5.0),
-        child: ListView(
-          children: <Widget>[
-            Card(
-              child: ListTile(
-                leading: FlutterLogo(),
-                title: Text('Hello $name'),
-              ),
-            )
-          ],
-        ),
-      ),
+      child: Text('Hello $name')
     );
   }
 }
