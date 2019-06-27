@@ -6,11 +6,21 @@ class Validators {
     r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$',
   );
 
+  static RegExp _minMaxLengthText(int min, int max) {
+    return RegExp(
+      r'^[a-zA-Z0-9.!#&'']{$min, $max}\$',
+    );
+  }
+
   static isValidEmail(String email) {
     return _emailRegExp.hasMatch(email);
   }
 
   static isValidPassword(String password) {
     return _passwordRegExp.hasMatch(password);
+  }
+
+  static isMinimumMaximumLengthText(String text, int min, int max) {
+    return _minMaxLengthText(min, max).hasMatch(text);
   }
 }

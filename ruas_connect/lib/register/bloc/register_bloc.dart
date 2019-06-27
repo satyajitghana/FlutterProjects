@@ -60,7 +60,6 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     String email,
     String password,
   ) async* {
-    yield RegisterState.loading();
     try {
       await _userRepository.signUpWithEmailAndPassword(
         email: email,

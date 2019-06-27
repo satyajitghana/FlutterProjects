@@ -92,14 +92,14 @@ class _CourseArenaState extends State<CourseArena> {
             try {
               final filePath = await FilePicker.getFilePath(
                   type: FileType.CUSTOM, fileExtension: 'pdf');
-              print('Cached at : { $filePath }');
-              UploadRepository uploadRepository =
-                  UploadRepository(FirebaseStorage.instance);
-              await uploadRepository.uploadDocument(filePath);
+//              print('Cached at : { $filePath }');
+//              UploadRepository uploadRepository =
+//                  UploadRepository(FirebaseStorage.instance);
+//              await uploadRepository.uploadDocument(filePath);
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => UploadScreen(),
+                  builder: (context) => UploadScreen(filePath: filePath),
                 ),
               );
             } catch (_) {

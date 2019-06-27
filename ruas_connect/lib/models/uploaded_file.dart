@@ -17,4 +17,17 @@ class UploadedFile {
       this.size,
       this.downloadUrl,
       this.uploaderUid);
+
+  @override
+  String toString() => '''{ Title : $title,
+  Description : $description,
+  DateUploaded : $dateUploaded,
+  UploaderUsername : $uploaderUsername,
+  FileName : $filename,
+  Size : $size,
+  DownloadUrl : $downloadUrl,
+  UploaderUid : $uploaderUid,
+  }''';
+
+
 }
