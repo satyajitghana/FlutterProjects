@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ruas_connect/models/models.dart';
 
 class NotesScreen extends StatelessWidget {
   @override
@@ -14,7 +15,8 @@ class NotesScreen extends StatelessWidget {
               'shadowleaf.satyajit',
               'New Doc Something.pdf',
               '120Kb',
-              'https://somebigassurl'),
+              'https://somebigassurl',
+              ''),
         ),
         NoteListItem(
           uploadedFile: UploadedFile(
@@ -24,7 +26,8 @@ class NotesScreen extends StatelessWidget {
               'shadowleaf.satyajit',
               'New Doc Something Something.pdf',
               '500Kb',
-              'https://somebigassurl'),
+              'https://somebigassurl',
+              ''),
         )
       ],
     );
@@ -132,17 +135,4 @@ class NoteListItem extends StatelessWidget {
       ),
     );
   }
-}
-
-class UploadedFile {
-  final String title;
-  final String description;
-  final DateTime dateUploaded;
-  final String uploaderUsername;
-  final String filename;
-  final String size;
-  final String downloadUrl;
-
-  UploadedFile(this.title, this.description, this.dateUploaded,
-      this.uploaderUsername, this.filename, this.size, this.downloadUrl);
 }

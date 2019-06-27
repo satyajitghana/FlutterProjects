@@ -1,7 +1,10 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:ruas_connect/notes/notes.dart';
+import 'package:ruas_connect/repository/respository.dart';
 import 'package:ruas_connect/upload/upload.dart';
+import 'package:file_picker/file_picker.dart';
 
 class CourseArena extends StatefulWidget {
   final String courseCode;
@@ -83,15 +86,44 @@ class _CourseArenaState extends State<CourseArena> {
         },
         items: bottomNavbarItems,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => UploadScreen()));
-        },
-        child: Icon(Icons.file_upload),
-        backgroundColor: Colors.white30,
-        foregroundColor: Colors.white,
-      ),
+      floatingActionButton: Builder(builder: (BuildContext context) {
+        return FloatingActionButton(
+          onPressed: () async {
+            try {
+              final filePath = await FilePicker.getFilePath(
+                  type: FileType.CUSTOM, fileExtension: 'pdf');
+              print('Cached at : { $filePath }');
+              UploadRepository uploadRepository =
+                  UploadRepository(FirebaseStorage.instance);
+              await uploadRepository.uploadDocument(filePath);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UploadScreen(),
+                ),
+              );
+            } catch (_) {
+              print(_);
+              Scaffold.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    content: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text('Error Selecting File : {$_}'),
+                        Icon(Icons.warning, color: Colors.redAccent,)
+                      ],
+                    ),
+                  ),
+                );
+            }
+          },
+          child: Icon(Icons.file_upload),
+          backgroundColor: Colors.white30,
+          foregroundColor: Colors.white,
+        );
+      }),
     );
   }
 }
