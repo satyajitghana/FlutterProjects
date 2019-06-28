@@ -3,62 +3,112 @@ import 'package:ruas_connect/models/models.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ruas_connect/documents_bloc/bloc.dart';
+import 'package:ruas_connect/models/models.dart';
 
-class NotesScreen extends StatelessWidget {
+class NotesScreen extends StatefulWidget {
   final String courseCode;
 
   const NotesScreen({Key key, this.courseCode}) : super(key: key);
 
   @override
+  _NotesScreenState createState() => _NotesScreenState();
+}
+
+class _NotesScreenState extends State<NotesScreen> {
+  final _scrollController = ScrollController();
+  DocumentsBloc _documentsBloc;
+
+  bool hasMoreDocuments = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _documentsBloc = BlocProvider.of<DocumentsBloc>(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       builder: (context) =>
-          DocumentsBloc(arenaName: 'notes', courseCode: courseCode)
+          DocumentsBloc(arenaName: 'notes', courseCode: widget.courseCode)
             ..dispatch(LoadDocuments()),
-      child: NotesList(),
+      child: BlocBuilder(
+          bloc: _documentsBloc,
+          builder: (context, DocumentsState state) {
+            if (state is InitialDocumentsState) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state is LoadedDocumentsState) {
+              hasMoreDocuments = state.hasMoreDocuments;
+              return NotificationListener<ScrollNotification>(
+                onNotification: _handleScrollNotification,
+                child: ListView.builder(
+                    itemCount: _calculateListItemCount(state),
+                    itemBuilder: (context, index) {
+                      return index >= state.docs.length
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : NoteListItem(documentUploaded: DocumentUploaded( document: state.docs[index].data));
+                    }),
+              );
+            }
+          }),
     );
+  }
 
-//    ListView(
-//      padding: const EdgeInsets.all(5.0),
-//      children: <Widget>[
-//        NoteListItem(
-//          uploadedFile: UploadedFile(
-//              title: 'Engineering Mathematics Notes',
-//              description: 'ma' 'am ke diye hue notes',
-//              dateUploaded: DateTime.now(),
-//              uploaderUsername: 'shadowleaf.satyajit',
-//              filename: 'New Doc Something.pdf',
-//              size: '120Kb',
-//              uploaderUid: ''),
-//        ),
-//      ],
-//    );
+  int _calculateListItemCount(LoadedDocumentsState state) {
+    if (state.hasMoreDocuments) {
+      return state.docs.length + 1;
+    } else {
+      return state.docs.length;
+    }
+  }
+
+  bool _handleScrollNotification(ScrollNotification scrollNotification) {
+    if (scrollNotification is ScrollEndNotification &&
+        _scrollController.position.extentAfter == 0 &&
+        hasMoreDocuments) {
+      _documentsBloc.dispatch(LoadMoreDocuments());
+    }
+
+    return false;
   }
 }
 
-class NotesList extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final DocumentsBloc _documentsBloc =
-        BlocProvider.of<DocumentsBloc>(context);
-
-    return BlocBuilder(
-        bloc: _documentsBloc, builder: (context, DocumentsState state) {
-          if (state is InitialDocumentsState) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            return NotificationListener<ScrollNotification>(child: null);
-          }
-    });
-  }
-}
+//class NotesScreen extends StatelessWidget {
+//  final String courseCode;
+//
+//  const NotesScreen({Key key, this.courseCode}) : super(key: key);
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return ;
+//
+////    ListView(
+////      padding: const EdgeInsets.all(5.0),
+////      children: <Widget>[
+////        NoteListItem(
+////          uploadedFile: UploadedFile(
+////              title: 'Engineering Mathematics Notes',
+////              description: 'ma' 'am ke diye hue notes',
+////              dateUploaded: DateTime.now(),
+////              uploaderUsername: 'shadowleaf.satyajit',
+////              filename: 'New Doc Something.pdf',
+////              size: '120Kb',
+////              uploaderUid: ''),
+////        ),
+////      ],
+////    );
+//  }
+//}
 
 class NoteListItem extends StatelessWidget {
-  final UploadedFile uploadedFile;
 
-  const NoteListItem({Key key, this.uploadedFile}) : super(key: key);
+  final DocumentUploaded documentUploaded;
+
+  const NoteListItem({Key key, this.documentUploaded}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +131,7 @@ class NoteListItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    '${uploadedFile.title}',
+                    '${documentUploaded.title}',
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -89,7 +139,7 @@ class NoteListItem extends StatelessWidget {
                   ),
                   const Padding(padding: EdgeInsets.only(bottom: 8.0)),
                   Text(
-                    '${uploadedFile.description}',
+                    '${documentUploaded.description}',
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -99,9 +149,9 @@ class NoteListItem extends StatelessWidget {
                   ),
                   const Padding(padding: EdgeInsets.only(bottom: 8.0)),
                   Text(
-                      'File : ${uploadedFile.filename} Size: ${uploadedFile.size}'),
+                      'File : ${documentUploaded.fileName} Size: ${documentUploaded.size}'),
                   const Padding(padding: EdgeInsets.only(bottom: 8.0)),
-                  Text('Uploaded By : ${uploadedFile.uploaderUsername}'),
+                  Text('Uploaded By : ${documentUploaded.uploaderUsername}'),
                   const Padding(
                     padding: EdgeInsets.only(top: 10.0),
                   )
@@ -120,7 +170,7 @@ class NoteListItem extends StatelessWidget {
                           onPressed: () {},
                           color: Colors.transparent,
                           icon: Icon(Icons.thumb_up),
-                          label: Text('2'),
+                          label: Text(documentUploaded.stats['like_count']),
                         ),
                         Text('Upvote'),
                       ],
@@ -131,7 +181,7 @@ class NoteListItem extends StatelessWidget {
                           onPressed: () {},
                           color: Colors.transparent,
                           icon: Icon(Icons.info_outline),
-                          label: Text('2'),
+                          label: Text(documentUploaded.stats['view_count']),
                         ),
                         Text('View'),
                       ],
@@ -142,7 +192,7 @@ class NoteListItem extends StatelessWidget {
                           color: Colors.transparent,
                           onPressed: () {},
                           icon: Icon(Icons.file_download),
-                          label: Text('10'),
+                          label: Text(documentUploaded.stats['download_count']),
                         ),
                         Text('Download'),
                       ],

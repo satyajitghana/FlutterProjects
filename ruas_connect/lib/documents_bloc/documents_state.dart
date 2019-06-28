@@ -10,12 +10,17 @@ abstract class DocumentsState extends Equatable {
 class InitialDocumentsState extends DocumentsState {}
 
 class LoadedDocumentsState extends DocumentsState {
+  final List<DocumentSnapshot> docs;
   final DocumentSnapshot lastSnapshot;
   final bool hasMoreDocuments;
 
   LoadedDocumentsState(
-      {@required this.hasMoreDocuments, @required this.lastSnapshot})
+      {@required this.docs,
+      @required this.hasMoreDocuments,
+      @required this.lastSnapshot})
       : super([hasMoreDocuments, lastSnapshot]);
 }
 
 class LoadingDocumentsState extends DocumentsState {}
+
+class EndOfDocumentsState extends DocumentsState {}

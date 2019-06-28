@@ -20,7 +20,7 @@ class DocumentsBloc extends Bloc<DocumentsEvent, DocumentsState> {
     if (event is LoadDocuments) {
       yield* _mapLoadDocumentsToState();
     } else if (event is LoadMoreDocuments) {
-      yield* _mapLoadMoreDocumentsToState(event.fromSnapshot);
+      yield* _mapLoadMoreDocumentsToState();
     }
   }
 
@@ -30,19 +30,33 @@ class DocumentsBloc extends Bloc<DocumentsEvent, DocumentsState> {
     yield LoadingDocumentsState();
     List<DocumentSnapshot> docs = await CoursesRepository.getNDocumentsOf(arenaName, courseCode, 8);
     bool hasMoreDocs = docs.length == 8;
+
+    if (currentState is LoadedDocumentsState) {
+      docs = docs + (currentState as LoadedDocumentsState).docs;
+    }
+
     yield LoadedDocumentsState(
+      docs: docs,
       hasMoreDocuments: hasMoreDocs,
       lastSnapshot: docs[docs.length-1]
     );
   }
 
-  Stream<DocumentsState> _mapLoadMoreDocumentsToState(
-      DocumentSnapshot fromSnapshot) async* {
+  Stream<DocumentsState> _mapLoadMoreDocumentsToState() async* {
     yield LoadingDocumentsState();
+
+    DocumentSnapshot fromSnapshot = (currentState as LoadedDocumentsState).lastSnapshot;
+
     List<DocumentSnapshot> docs = await CoursesRepository.getNDocumentsFrom(
         arenaName, courseCode, 8, fromSnapshot);
     bool hasMoreDocs = docs.length == 8;
+
+    if (currentState is LoadedDocumentsState) {
+      docs = docs + (currentState as LoadedDocumentsState).docs;
+    }
+
     yield LoadedDocumentsState(
+      docs: docs,
       hasMoreDocuments: hasMoreDocs,
       lastSnapshot: docs[docs.length-1]
     );

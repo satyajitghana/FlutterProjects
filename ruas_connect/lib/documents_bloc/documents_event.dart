@@ -9,8 +9,4 @@ abstract class DocumentsEvent extends Equatable {
 
 class LoadDocuments extends DocumentsEvent {}
 
-class LoadMoreDocuments extends DocumentsEvent {
-  final DocumentSnapshot fromSnapshot;
-
-  LoadMoreDocuments({@required this.fromSnapshot}) : super([fromSnapshot]);
-}
+class LoadMoreDocuments extends DocumentsEvent {}
