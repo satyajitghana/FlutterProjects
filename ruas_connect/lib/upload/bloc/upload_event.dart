@@ -23,26 +23,41 @@ class DescriptionChanged extends UploadEvent {
 
   @override
   String toString() => 'DescriptionChanged { description : $description }';
-
-
 }
 
 class Submitted extends UploadEvent {
-  final String title;
-  final String description;
+  final String title,
+      description,
+      fileName,
+      fileSize,
+      filePath;
 
-  Submitted({@required this.title, @required this.description})
-      : super([title, description]);
+  Submitted({
+    @required this.title,
+    @required this.description,
+    @required this.fileName,
+    @required this.fileSize,
+    @required this.filePath,
+  }) : super([
+          title,
+          description,
+          fileName,
+          fileSize,
+          filePath,
+        ]);
 
   @override
-  String toString() => 'Submitted { title : $title, description : $description }';
+  String toString() => '''Submitted { title: $title,
+  description : $description,
+  fileName : $fileName,
+  fileSize : $fileSize,
+  filePath : $filePath}''';
 }
 
 class StartUpload extends UploadEvent {
   final UploadedFile uploadedFile;
 
-  StartUpload({ @required this.uploadedFile } )
-    : super([uploadedFile]);
+  StartUpload({@required this.uploadedFile}) : super([uploadedFile]);
 
   @override
   String toString() => 'StartUpload { uploadedFile : $uploadedFile }';

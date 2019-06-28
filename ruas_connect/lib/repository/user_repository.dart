@@ -5,6 +5,10 @@ class UserRepository {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
 
+  static Future<FirebaseUser> get getCurrentUser  {
+    return FirebaseAuth.instance.currentUser();
+  }
+
   UserRepository({ FirebaseAuth firebaseAuth, GoogleSignIn googleSignIn })
     : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
       _googleSignIn = googleSignIn ?? GoogleSignIn();

@@ -1,10 +1,21 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:meta/meta.dart';
 import 'package:ruas_connect/validators.dart';
 import 'package:rxdart/rxdart.dart';
 import 'bloc.dart';
+import 'package:ruas_connect/models/models.dart';
+import 'package:ruas_connect/repository/respository.dart';
 
 class UploadBloc extends Bloc<UploadEvent, UploadState> {
+  final String arenaName;
+  final String courseCode;
+
+  UploadBloc({@required String arenaName, @required String courseCode})
+      : assert(arenaName != null, courseCode != null),
+        arenaName = arenaName,
+        courseCode = courseCode;
+
   @override
   UploadState get initialState => UploadFormState.empty();
 
@@ -30,7 +41,13 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
     } else if (event is DescriptionChanged) {
       yield* _mapDescriptionChangedToState(event.description);
     } else if (event is Submitted) {
-      yield* _mapFormSubmittedToState(event.title, event.description);
+      yield* _mapFormSubmittedToState(
+          title: event.title,
+          fileName: event.fileName,
+          filePath: event.filePath,
+          fileSize: event.fileSize,
+          description: event.description,
+      );
     }
   }
 
@@ -38,29 +55,46 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
   /// Description will have a minimum of 5 and maximum of 120 characters
 
   Stream<UploadState> _mapTitleChangedToState(String title) async* {
-    yield (currentState as UploadFormState).update(
-      isTitleValid: title.length > 5 && title.length < 20
+    yield (currentState as UploadFormState)
+        .update(isTitleValid: title.length > 5 && title.length < 20
 //      Validators.isMinimumMaximumLengthText(title, 5, 30),
-    );
+            );
   }
 
   Stream<UploadState> _mapDescriptionChangedToState(String description) async* {
     yield (currentState as UploadFormState).update(
-      isDescriptionValid: description.length > 5 && description.length < 120
+        isDescriptionValid: description.length > 5 && description.length < 120
 //          Validators.isMinimumMaximumLengthText(description, 5, 120),
-    );
+        );
   }
 
-  Stream<UploadState> _mapFormSubmittedToState(
+  Stream<UploadState> _mapFormSubmittedToState({
     String title,
     String description,
-  ) async* {
+    String fileName,
+    String fileSize,
+    String filePath,
+  }) async* {
     try {
-      // TODO: Logic Here
-      print('{ _mapFormSubmittedToState : $title , $description }');
+      yield UploadFormState.loading();
+      final toUpload = UploadedFile(
+        title: title,
+        description: description,
+        dateUploaded: DateTime.now(),
+        filename: fileName,
+        size: fileSize,
+      );
+      print('toUpload : { $toUpload }');
+      await CoursesRepository.writeArenaFile(
+        uploadedFile: toUpload,
+        courseCode: this.courseCode,
+        arena: this.arenaName,
+        filePath: filePath,
+      );
       yield UploadFormState.success();
     } catch (_) {
       yield UploadFormState.failure();
+      yield UploadError(error: _.toString());
     }
   }
 }

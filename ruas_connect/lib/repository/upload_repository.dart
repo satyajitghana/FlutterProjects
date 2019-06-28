@@ -10,15 +10,16 @@ class UploadRepository {
       : assert(storageRef != null),
         _storageRef = storageRef;
 
-  Future<void> uploadDocument(String filePath) async {
-    final StorageReference storageReference = FirebaseStorage.instance
-        .ref()
-        .child('notes/BSC207A/uploaded_files')
-        .child('${Random().nextInt(10000).toString()}asdk213hj12sjk1h2w.pdf');
+  Future<void> uploadDocument(
+      {String filename,
+      Map<String, String> metadata,
+      String filePath,
+      String uploadLocationWithFileName}) async {
+    final StorageReference storageReference =
+        FirebaseStorage.instance.ref().child(uploadLocationWithFileName);
     File toUpload = File(filePath);
-    final StorageUploadTask storageUploadTask =
-        storageReference.putFile(toUpload);
-    final String downloadUrl = await (await storageUploadTask.onComplete).ref.getDownloadURL();
-    print('Download Url : { $downloadUrl }');
+    final StorageUploadTask storageUploadTask = storageReference.putFile(
+        toUpload, StorageMetadata(contentType: 'application/pdf', customMetadata: metadata));
+    await storageUploadTask.onComplete;
   }
 }

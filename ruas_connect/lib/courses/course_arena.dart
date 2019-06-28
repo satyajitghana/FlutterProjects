@@ -92,16 +92,38 @@ class _CourseArenaState extends State<CourseArena> {
             try {
               final filePath = await FilePicker.getFilePath(
                   type: FileType.CUSTOM, fileExtension: 'pdf');
-//              print('Cached at : { $filePath }');
-//              UploadRepository uploadRepository =
-//                  UploadRepository(FirebaseStorage.instance);
-//              await uploadRepository.uploadDocument(filePath);
-              Navigator.push(
+
+              if (filePath == null) {
+                throw Exception(['Please Select a File']);
+              }
+
+              String arenaName = '';
+
+              switch (_selectedIndex) {
+                case 0:
+                  arenaName = 'notes';
+                  break;
+                case 1:
+                  arenaName = 'questions';
+                  break;
+                case 2:
+                  arenaName = 'assignments';
+                  break;
+              }
+
+              final isUploadSuccessful = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => UploadScreen(filePath: filePath),
+                  builder: (context) => UploadScreen(
+                      filePath: filePath,
+                      arenaName: arenaName,
+                      courseCode: widget.courseCode),
                 ),
               );
+
+              if (isUploadSuccessful) {
+                ///Refresh the page
+              }
             } catch (_) {
               print(_);
               Scaffold.of(context)
@@ -112,7 +134,10 @@ class _CourseArenaState extends State<CourseArena> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text('Error Selecting File : {$_}'),
-                        Icon(Icons.warning, color: Colors.redAccent,)
+                        Icon(
+                          Icons.warning,
+                          color: Colors.redAccent,
+                        )
                       ],
                     ),
                   ),

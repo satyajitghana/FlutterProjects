@@ -2,21 +2,19 @@ class UploadedFile {
   final String title;
   final String description;
   final DateTime dateUploaded;
-  final String uploaderUsername;
+  String uploaderUsername;
   final String filename;
   final String size;
-  final String downloadUrl;
-  final String uploaderUid;
+  String uploaderUid;
 
   UploadedFile(
-      this.title,
+      {this.title,
       this.description,
       this.dateUploaded,
       this.uploaderUsername,
       this.filename,
       this.size,
-      this.downloadUrl,
-      this.uploaderUid);
+      this.uploaderUid});
 
   @override
   String toString() => '''{ Title : $title,
@@ -25,9 +23,18 @@ class UploadedFile {
   UploaderUsername : $uploaderUsername,
   FileName : $filename,
   Size : $size,
-  DownloadUrl : $downloadUrl,
   UploaderUid : $uploaderUid,
   }''';
 
-
+  Map<String, dynamic> toJSON() {
+    return {
+      'title': title,
+      'description': description,
+      'dateUploaded': dateUploaded,
+      'uploaderUsername': uploaderUsername,
+      'filename': filename,
+      'size': size,
+      'uploaderUid': uploaderUid
+    };
+  }
 }

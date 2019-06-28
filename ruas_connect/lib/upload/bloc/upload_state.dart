@@ -6,6 +6,12 @@ abstract class UploadState extends Equatable {
   UploadState([List props = const []]) : super(props);
 }
 
+class UploadError extends UploadState {
+  final String error;
+
+  UploadError({ @required this.error }) : super([error]);
+}
+
 class UploadFormState extends UploadState {
   final bool isTitleValid;
   final bool isDescriptionValid;
@@ -108,5 +114,76 @@ class UploadFormState extends UploadState {
       isSuccess: $isSuccess,
       isFailure: $isFailure,
     }''';
+  }
+}
+
+/// THIS IS PROBABLY GOING TO BE USED LATER
+
+class UploadFileState extends UploadState {
+  final bool isUploadedToFirebaseStorage;
+  final bool isWrittenToFireStore;
+  final bool isUploading;
+
+  UploadFileState(
+      {@required this.isUploading,
+      @required this.isUploadedToFirebaseStorage,
+      @required this.isWrittenToFireStore})
+      : super([isUploadedToFirebaseStorage, isWrittenToFireStore]);
+
+  bool get isValidUpload => isUploadedToFirebaseStorage && isWrittenToFireStore;
+
+  factory UploadFileState.init() {
+    return UploadFileState(
+      isUploadedToFirebaseStorage: false,
+      isWrittenToFireStore: false,
+      isUploading: false,
+    );
+  }
+
+  factory UploadFileState.success() {
+    return UploadFileState(
+      isUploadedToFirebaseStorage: true,
+      isWrittenToFireStore: true,
+      isUploading: false,
+    );
+  }
+
+  factory UploadFileState.uploading() {
+    return UploadFileState(
+      isUploadedToFirebaseStorage: false,
+      isWrittenToFireStore: false,
+      isUploading: true,
+    );
+  }
+
+  factory UploadFileState.failedFireStore() {
+    return UploadFileState(
+      isUploadedToFirebaseStorage: true,
+      isWrittenToFireStore: false,
+      isUploading: false,
+    );
+  }
+
+  UploadFileState update({
+    bool isUploadedToFirebaseStorage,
+    bool isWrittenToFireStore,
+    bool isUploading,
+  }) {
+    return copyWith(
+        isWrittenToFireStore: isWrittenToFireStore,
+        isUploadedToFirebaseStorage: isUploadedToFirebaseStorage,
+        isUploading: isUploading);
+  }
+
+  UploadFileState copyWith({
+    bool isUploadedToFirebaseStorage,
+    bool isWrittenToFireStore,
+    bool isUploading,
+  }) {
+    return UploadFileState(
+        isUploadedToFirebaseStorage:
+            isUploadedToFirebaseStorage ?? this.isUploadedToFirebaseStorage,
+        isWrittenToFireStore: isWrittenToFireStore ?? this.isWrittenToFireStore,
+        isUploading: isUploading ?? this.isUploading);
   }
 }

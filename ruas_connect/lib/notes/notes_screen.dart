@@ -9,26 +9,14 @@ class NotesScreen extends StatelessWidget {
       children: <Widget>[
         NoteListItem(
           uploadedFile: UploadedFile(
-              'Engineering Mathematics Notes',
-              'ma' 'am ke diye hue notes',
-              DateTime.now(),
-              'shadowleaf.satyajit',
-              'New Doc Something.pdf',
-              '120Kb',
-              'https://somebigassurl',
-              ''),
+              title: 'Engineering Mathematics Notes',
+              description: 'ma' 'am ke diye hue notes',
+              dateUploaded: DateTime.now(),
+              uploaderUsername : 'shadowleaf.satyajit',
+              filename : 'New Doc Something.pdf',
+              size : '120Kb',
+              uploaderUid : ''),
         ),
-        NoteListItem(
-          uploadedFile: UploadedFile(
-              'Engineering Mathematics Old Notes',
-              'some random notes',
-              DateTime.now(),
-              'shadowleaf.satyajit',
-              'New Doc Something Something.pdf',
-              '500Kb',
-              'https://somebigassurl',
-              ''),
-        )
       ],
     );
   }

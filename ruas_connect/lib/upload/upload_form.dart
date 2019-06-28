@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as Path;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ruas_connect/upload/bloc/bloc.dart';
+import 'package:ruas_connect/models/models.dart';
 
 class UploadForm extends StatefulWidget {
   final String filePath;
@@ -28,25 +29,30 @@ class _UploadFormState extends State<UploadForm> {
     return isPopulated && state.isFormValid && !state.isSubmitting;
   }
 
+  String fileSize;
+  String fileName;
+
   @override
   void initState() {
     super.initState();
     _uploadBloc = BlocProvider.of<UploadBloc>(context);
     _titleController.addListener(_onTitleChanged);
     _descriptionController.addListener(_onDescriptionChanged);
+
+    File file = File(widget.filePath);
+
+    fileSize = '${(file.lengthSync() * 1e-3).toStringAsFixed(2)} kB';
+    fileName = Path.basename(file.path);
   }
 
   @override
   Widget build(BuildContext context) {
-    File file = File(widget.filePath);
-
-    String fileSize = '${(file.lengthSync() * 1e-3).toStringAsFixed(2)} kB';
-    String fileName = Path.basename(file.path);
-
     return BlocListener(
       bloc: _uploadBloc,
       listener: (BuildContext context, UploadState state) {
-        print(state);
+        if (state is UploadError) {
+          /// Create a New Window With the displayed Error
+        }
         if (state is UploadFormState) {
           if (state.isSubmitting) {
             Scaffold.of(context)
@@ -56,20 +62,31 @@ class _UploadFormState extends State<UploadForm> {
                   content: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Registering...'),
+                      Text('Uploading, please wait ...'),
                       CircularProgressIndicator(),
                     ],
                   ),
                 ),
               );
           }
-
           if (state.isSuccess) {
-//          BlocProvider.of<AuthenticationBloc>(context).dispatch(LoggedIn());
-//            Navigator.of(context).pop();
             Scaffold.of(context)
               ..hideCurrentSnackBar()
-              ..showSnackBar(SnackBar(content: Text('Success')));
+              ..showSnackBar(
+                SnackBar(
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Uploaded Successfully !'),
+                      Icon(
+                        Icons.done,
+                        color: Colors.green,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            Navigator.pop(context, true);
           }
           if (state.isFailure) {
             Scaffold.of(context)
@@ -194,7 +211,10 @@ class _UploadFormState extends State<UploadForm> {
     _uploadBloc.dispatch(
       Submitted(
           title: _titleController.text,
-          description: _descriptionController.text),
+          description: _descriptionController.text,
+          fileName: fileName,
+          fileSize: fileSize,
+          filePath: widget.filePath),
     );
   }
 }
