@@ -5,6 +5,33 @@ import 'respository.dart';
 import 'package:uuid/uuid.dart';
 
 class CoursesRepository {
+  /// By Default we'll sort by number of likes
+  static Future<List<DocumentSnapshot>> getNDocumentsOf(
+      String arena, String courseCode, int N) async {
+    final CollectionReference docsRef = Firestore.instance
+        .collection(arena)
+        .document(courseCode)
+        .collection('uploaded_files')
+        .reference();
+    final Query query =
+        docsRef.orderBy('stats.like_count', descending: true).limit(N);
+    return (await query.getDocuments()).documents;
+  }
+
+  static Future<List<DocumentSnapshot>> getNDocumentsFrom(String arena,
+      String courseCode, int N, DocumentSnapshot fromSnapshot) async {
+    final CollectionReference docsRef = Firestore.instance
+        .collection(arena)
+        .document(courseCode)
+        .collection('uploaded_files')
+        .reference();
+    final Query query = docsRef
+        .orderBy('stats.like_count', descending: true)
+        .startAfterDocument(fromSnapshot)
+        .limit(N);
+    return (await query.getDocuments()).documents;
+  }
+
   Future<Map<String, String>> getCoursesOf(
       String branch, String semester) async {
     final coursesRef = Firestore.instance
@@ -55,10 +82,10 @@ class CoursesRepository {
       'uploaderUsername': user.displayName,
       'title': uploadedFile.title,
       'description': uploadedFile.description,
-      'courseCode' : courseCode,
-      'arenaName' : arena,
-      'uuid' : uuid,
-      'fileName' : uploadedFile.filename,
+      'courseCode': courseCode,
+      'arenaName': arena,
+      'uuid': uuid,
+      'fileName': uploadedFile.filename,
     };
     await uploadRepository.uploadDocument(
         filename: '$uuid.pdf',

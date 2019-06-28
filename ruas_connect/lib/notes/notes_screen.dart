@@ -1,24 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:ruas_connect/models/models.dart';
+import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ruas_connect/documents_bloc/bloc.dart';
 
 class NotesScreen extends StatelessWidget {
+  final String courseCode;
+
+  const NotesScreen({Key key, this.courseCode}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(5.0),
-      children: <Widget>[
-        NoteListItem(
-          uploadedFile: UploadedFile(
-              title: 'Engineering Mathematics Notes',
-              description: 'ma' 'am ke diye hue notes',
-              dateUploaded: DateTime.now(),
-              uploaderUsername : 'shadowleaf.satyajit',
-              filename : 'New Doc Something.pdf',
-              size : '120Kb',
-              uploaderUid : ''),
-        ),
-      ],
+    return BlocProvider(
+      builder: (context) =>
+          DocumentsBloc(arenaName: 'notes', courseCode: courseCode)
+            ..dispatch(LoadDocuments()),
+      child: NotesList(),
     );
+
+//    ListView(
+//      padding: const EdgeInsets.all(5.0),
+//      children: <Widget>[
+//        NoteListItem(
+//          uploadedFile: UploadedFile(
+//              title: 'Engineering Mathematics Notes',
+//              description: 'ma' 'am ke diye hue notes',
+//              dateUploaded: DateTime.now(),
+//              uploaderUsername: 'shadowleaf.satyajit',
+//              filename: 'New Doc Something.pdf',
+//              size: '120Kb',
+//              uploaderUid: ''),
+//        ),
+//      ],
+//    );
+  }
+}
+
+class NotesList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final DocumentsBloc _documentsBloc =
+        BlocProvider.of<DocumentsBloc>(context);
+
+    return BlocBuilder(
+        bloc: _documentsBloc, builder: (context, DocumentsState state) {
+          if (state is InitialDocumentsState) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return NotificationListener<ScrollNotification>(child: null);
+          }
+    });
   }
 }
 
