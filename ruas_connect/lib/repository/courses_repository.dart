@@ -58,6 +58,7 @@ class CoursesRepository {
       'courseCode' : courseCode,
       'arenaName' : arena,
       'uuid' : uuid,
+      'fileName' : uploadedFile.filename,
     };
     await uploadRepository.uploadDocument(
         filename: '$uuid.pdf',
