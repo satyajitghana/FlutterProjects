@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ruas_connect/authentication_bloc/bloc.dart';
 import 'package:ruas_connect/home_screen.dart';
+import 'models/models.dart';
 
 import 'courses/courses.dart';
 import 'settings/settings.dart';
@@ -17,6 +18,8 @@ class _BottomNavigationState extends State<MainArenaPage> {
       PageController(initialPage: 0, keepPage: true);
 
   int _selectedIndex = 0;
+
+  UserDetails currentUser;
 
   final bottomNavbarItems = [
     BottomNavyBarItem(
@@ -54,6 +57,10 @@ class _BottomNavigationState extends State<MainArenaPage> {
     super.initState();
     _title = bottomNavbarItems[_selectedIndex].title.data;
     _appBarBackground = bottomNavbarItems[_selectedIndex].activeColor;
+    currentUser = (BlocProvider.of<AuthenticationBloc>(context).currentState
+            as Authenticated)
+        .userDetails;
+    print(currentUser);
   }
 
   @override
@@ -116,6 +123,7 @@ class InnerPage extends StatelessWidget {
 
 class SlideRightRoute extends PageRouteBuilder {
   final Widget page;
+
   SlideRightRoute({this.page})
       : super(
           pageBuilder: (

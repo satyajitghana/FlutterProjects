@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ruas_connect/authentication_bloc/bloc.dart';
 import 'settings.dart';
 import 'package:ruas_connect/models/models.dart';
+import 'package:ruas_connect/repository/respository.dart';
 
 class SettingsScreen extends StatelessWidget {
   @override
@@ -15,10 +16,22 @@ class SettingsScreen extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.edit),
             // If Edit is successful then refresh this page
-            onPressed: () => Navigator.push(
-              context, 
-                MaterialPageRoute(builder: (context) => EditProfilePage()),
-            ),
+            onPressed: () {
+              UserDetails currentUser =
+                  (BlocProvider.of<AuthenticationBloc>(context).currentState
+                          as Authenticated)
+                      .userDetails;
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditProfilePage(
+                        uid: currentUser.uid,
+                        email: currentUser.email,
+                        currentUser: currentUser,
+                      ),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -27,7 +40,11 @@ class SettingsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              ProfileDetails(),
+              ProfileDetails(
+                currentUser: (BlocProvider.of<AuthenticationBloc>(context)
+                        .currentState as Authenticated)
+                    .userDetails,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
@@ -37,7 +54,26 @@ class SettingsScreen extends StatelessWidget {
                       color: Colors.blueAccent,
                       label: Text('Reset Password'),
                       icon: Icon(Icons.info_outline),
-                      onPressed: () {},
+                      onPressed: () {
+                        UserRepository.resetPassword();
+
+                        Scaffold.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            SnackBar(
+                              content: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Reset Password Link Sent to your Email !'),
+                                  Icon(
+                                    Icons.done,
+                                    color: Colors.green,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                      },
                     ),
                   ),
                   Padding(
@@ -64,6 +100,10 @@ class SettingsScreen extends StatelessWidget {
 }
 
 class ProfileDetails extends StatelessWidget {
+  final UserDetails currentUser;
+
+  const ProfileDetails({Key key, this.currentUser}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -88,15 +128,15 @@ class ProfileDetails extends StatelessWidget {
             color: Colors.blueGrey,
             child: ListTile(
               leading: Icon(Icons.person),
-              title: Text('Satyajit Ghana'),
-              subtitle: Text('Email : satyajitghana7@gmail.com'),
+              title: Text(currentUser.userName),
+              subtitle: Text('Email : ${currentUser.email}'),
             ),
           ),
           Container(
             color: Colors.blueGrey,
             child: ListTile(
               leading: Icon(Icons.streetview),
-              title: Text('CSE'),
+              title: Text(currentUser.branch),
               subtitle: Text('Branch'),
             ),
           ),
@@ -104,7 +144,7 @@ class ProfileDetails extends StatelessWidget {
             color: Colors.blueGrey,
             child: ListTile(
               leading: Icon(Icons.assignment),
-              title: Text('SEMESTER 03'),
+              title: Text(currentUser.semester),
               subtitle: Text('Semester'),
             ),
           ),

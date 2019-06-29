@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:ruas_connect/models/models.dart';
 
 @immutable
 abstract class AuthenticationState extends Equatable {
@@ -12,15 +13,23 @@ class Uninitialized extends AuthenticationState {
 }
 
 class Authenticated extends AuthenticationState {
-  final String displayName;
+  final UserDetails userDetails;
 
-  Authenticated(this.displayName) : super([displayName]);
+  Authenticated(this.userDetails) : super([userDetails]);
 
   @override
-  String toString() => 'State : Authenticated { displayName: $displayName }';
+  String toString() =>
+      'State : Authenticated { displayName: ${userDetails.userName} }';
 }
 
 class Unauthenticated extends AuthenticationState {
   @override
   String toString() => 'State : Unauthenticated';
+}
+
+class SetUserDetails extends AuthenticationState {
+  final String uid;
+  final String email;
+
+  SetUserDetails({this.uid, this.email}) : super([uid, email]);
 }

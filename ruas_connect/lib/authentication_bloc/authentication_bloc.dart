@@ -3,16 +3,15 @@ import 'package:bloc/bloc.dart';
 import 'package:ruas_connect/repository/user_repository.dart';
 import 'package:meta/meta.dart';
 import './bloc.dart';
+import 'package:ruas_connect/models/models.dart';
 
-class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
-
+class AuthenticationBloc
+    extends Bloc<AuthenticationEvent, AuthenticationState> {
   final UserRepository _userRepository;
 
-  AuthenticationBloc({ @required UserRepository userRepository})
-    : assert(userRepository != null),
-      _userRepository = userRepository;
-
-
+  AuthenticationBloc({@required UserRepository userRepository})
+      : assert(userRepository != null),
+        _userRepository = userRepository;
 
   @override
   AuthenticationState get initialState => Uninitialized();
@@ -34,19 +33,34 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     try {
       final isSignedIn = await _userRepository.isSignedIn();
       if (isSignedIn) {
-        final name = await _userRepository.getUsername();
-        yield Authenticated(name);
+        final UserDetails userDetails = await _userRepository.getUserDetails();
+        yield Authenticated(userDetails);
       } else {
         yield Unauthenticated();
       }
-    } catch(_) {
+    } catch (_) {
       yield Unauthenticated();
     }
   }
 
   Stream<AuthenticationState> _mapLoggedInToState() async* {
-    final name = await _userRepository.getUsername();
-    yield Authenticated(name);
+    try {
+      // if the document does not exist then dispatch the settings page
+      final UserDetails userDetails = await _userRepository.getUserDetails();
+      yield Authenticated(userDetails);
+    } on UserDetailsFieldException {
+      print('Exception : { found empty field } ');
+      final uid = await _userRepository.getUid();
+      final email = await _userRepository.getUserEmail();
+      yield SetUserDetails(
+        email: email,
+        uid: uid,
+      );
+    } catch (_) {
+      print('Error : $_');
+      dispatch(LoggedOut());
+      yield Unauthenticated();
+    }
   }
 
   Stream<AuthenticationState> _mapLoggedOutToState() async* {

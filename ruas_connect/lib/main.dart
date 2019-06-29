@@ -9,6 +9,8 @@ import 'authentication_bloc/bloc.dart';
 import 'package:ruas_connect/simple_bloc_delegate.dart';
 import 'package:ruas_connect/splash_screen.dart';
 import 'package:ruas_connect/home_screen.dart';
+import 'package:ruas_connect/settings/settings.dart';
+import 'package:ruas_connect/settings/bloc/bloc.dart';
 
 void main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
@@ -23,11 +25,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      builder: (BuildContext context) =>
-          AuthenticationBloc(userRepository: userRepository)
-            ..dispatch(AppStarted()),
-      child: App(userRepository: userRepository, courseRepository: coursesRepository,),
+    return BlocProviderTree(
+      blocProviders: [
+        BlocProvider<AuthenticationBloc>(
+          builder: (BuildContext context) =>
+              AuthenticationBloc(userRepository: userRepository)
+                ..dispatch(AppStarted()),
+        ),
+        BlocProvider<SettingsBloc>(
+          builder: (BuildContext context) =>
+              SettingsBloc(userRepository: userRepository),
+        ),
+      ],
+      child: App(
+          userRepository: userRepository, courseRepository: coursesRepository),
     );
   }
 }
@@ -57,13 +68,18 @@ class App extends StatelessWidget {
               return SplashScreen();
             }
             if (state is Authenticated) {
-//            return HomeScreen(name: state.displayName,);
               return MainArenaPage();
-//          return MyHomePage(title: 'Ho',);
             }
             if (state is Unauthenticated) {
               return LoginScreen(
                 userRepository: _userRepository,
+              );
+            }
+            // SetUserDetails is called only when Authenticated
+            if (state is SetUserDetails) {
+              return EditProfilePage(
+                uid: state.uid,
+                email: state.email,
               );
             }
           },

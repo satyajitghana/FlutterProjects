@@ -6,10 +6,18 @@ class Validators {
     r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$',
   );
 
+  static final RegExp _usernameRegExp = RegExp(
+      r'^(?=.{6,15}$)[a-zA-Z0-9]+([a-zA-Z0-9](_|.)[a-zA-Z0-9])*[a-zA-Z0-9]+$'
+  );
+
   static RegExp _minMaxLengthText(int min, int max) {
     return RegExp(
       r'^[a-zA-Z0-9.!#&'']{$min, $max}\$',
     );
+  }
+
+  static isValidUsername(String username) {
+    return _usernameRegExp.hasMatch(username);
   }
 
   static isValidEmail(String email) {
