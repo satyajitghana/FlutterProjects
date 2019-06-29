@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ruas_connect/authentication_bloc/bloc.dart';
 import 'package:ruas_connect/home_screen.dart';
+import 'package:ruas_connect/updates_screen.dart';
 import 'models/models.dart';
 
 import 'courses/courses.dart';
@@ -86,10 +87,10 @@ class _BottomNavigationState extends State<MainArenaPage> {
         controller: _pageController,
         onPageChanged: onPageChanged,
         children: <Widget>[
-          HomeScreen(name: 'Hell'),
+          HomeScreen(name: currentUser.userName),
           CoursesScreen(),
           InnerPage(color: Colors.pink),
-          InnerPage(color: Colors.blue),
+          UpdatesScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavyBar(

@@ -5,15 +5,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ruas_connect/courses/bloc/bloc.dart';
 import 'courses.dart';
 
-class CoursesScreen extends StatelessWidget {
+class CoursesScreen extends StatefulWidget {
+  @override
+  _CoursesScreenState createState() => _CoursesScreenState();
+}
+
+class _CoursesScreenState extends State<CoursesScreen> with AutomaticKeepAliveClientMixin<CoursesScreen> {
   final CoursesRepository coursesRepository = CoursesRepository();
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocProvider(
         builder: (context) => CoursesBloc(coursesRepository: coursesRepository),
         child: CoursesCards());
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class CoursesCards extends StatelessWidget {

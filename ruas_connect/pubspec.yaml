@@ -37,6 +37,7 @@ dev_dependencies:
   google_sign_in: ^4.0.2
   flutter_bloc: ^0.18.3
   cloud_functions: ^0.4.0+2
+  firebase_database: ^3.0.3
 
   # UI Stuff
   bottom_navy_bar: ^5.1.0
