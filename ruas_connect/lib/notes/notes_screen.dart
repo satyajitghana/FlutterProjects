@@ -29,7 +29,6 @@ class _NotesScreenState extends State<NotesScreen> {
     _documentsBloc =
         DocumentsBloc(arenaName: 'notes', courseCode: widget.courseCode)
           ..dispatch(LoadDocuments());
-//        BlocProvider.of<DocumentsBloc>(context);
   }
 
   @override
@@ -41,7 +40,7 @@ class _NotesScreenState extends State<NotesScreen> {
       child: BlocBuilder(
           bloc: _documentsBloc,
           builder: (context, DocumentsState state) {
-            if (state is InitialDocumentsState) {
+            if (state is LoadingDocumentsState) {
               return Container(
                 child: Center(
                   child: CircularProgressIndicator(),
@@ -71,6 +70,11 @@ class _NotesScreenState extends State<NotesScreen> {
                                     document: state.docs[index].data)),
                       );
                     }),
+              );
+            } else {
+              print('state : $state');
+              return Center(
+                child: Text('What state is this ? : $state'),
               );
             }
           }),
@@ -194,7 +198,7 @@ class NoteListItem extends StatelessWidget {
                                 .collection('liked_by')
                                 .document(
                                     (await UserRepository.getCurrentUser).uid);
-                            await ref.setData({'liked':true});
+                            await ref.setData({'liked': true});
                           },
                           color: Colors.transparent,
                           icon: Icon(Icons.thumb_up),

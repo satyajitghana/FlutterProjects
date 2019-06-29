@@ -7,12 +7,12 @@ import 'package:ruas_connect/home_screen.dart';
 import 'courses/courses.dart';
 import 'settings/settings.dart';
 
-class PageNavigation extends StatefulWidget {
+class MainArenaPage extends StatefulWidget {
   @override
   _BottomNavigationState createState() => _BottomNavigationState();
 }
 
-class _BottomNavigationState extends State<PageNavigation> {
+class _BottomNavigationState extends State<MainArenaPage> {
   final PageController _pageController =
       PageController(initialPage: 0, keepPage: true);
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ruas_connect/login/login.dart';
-import 'package:ruas_connect/page_navigation.dart';
+import 'package:ruas_connect/main_arena.dart';
 
 import 'package:ruas_connect/repository/respository.dart';
 import 'authentication_bloc/bloc.dart';
@@ -58,7 +58,7 @@ class App extends StatelessWidget {
             }
             if (state is Authenticated) {
 //            return HomeScreen(name: state.displayName,);
-              return PageNavigation();
+              return MainArenaPage();
 //          return MyHomePage(title: 'Ho',);
             }
             if (state is Unauthenticated) {
