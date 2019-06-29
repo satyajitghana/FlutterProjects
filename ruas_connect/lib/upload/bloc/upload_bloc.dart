@@ -42,11 +42,11 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
       yield* _mapDescriptionChangedToState(event.description);
     } else if (event is Submitted) {
       yield* _mapFormSubmittedToState(
-          title: event.title,
-          fileName: event.fileName,
-          filePath: event.filePath,
-          fileSize: event.fileSize,
-          description: event.description,
+        title: event.title,
+        fileName: event.fileName,
+        filePath: event.filePath,
+        fileSize: event.fileSize,
+        description: event.description,
       );
     }
   }

@@ -6,15 +6,14 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Column(
+      body: Center(
+          child: Column(
         children: <Widget>[
           Padding(
             padding: EdgeInsets.symmetric(vertical: 20),
             child: Image.asset('assets/ruas_logo.png', height: 200),
           ),
-          Text(
-            'Loading !'
-          )
+          Text('Loading !')
         ],
       )),
     );

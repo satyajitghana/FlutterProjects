@@ -23,8 +23,8 @@ class CoursesBloc extends Bloc<CoursesEvent, CoursesState> {
       try {
         String branch = event.branch;
         String semester = event.semester;
-        Map<String, String> coursesList = await _coursesRepository
-            .getCoursesOf(branch, semester);
+        Map<String, String> coursesList =
+            await _coursesRepository.getCoursesOf(branch, semester);
         yield CoursesLoaded(coursesList: coursesList);
       } catch (_) {
         print(_.toString());

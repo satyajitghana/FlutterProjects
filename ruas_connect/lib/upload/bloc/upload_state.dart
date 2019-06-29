@@ -9,7 +9,7 @@ abstract class UploadState extends Equatable {
 class UploadError extends UploadState {
   final String error;
 
-  UploadError({ @required this.error }) : super([error]);
+  UploadError({@required this.error}) : super([error]);
 }
 
 class UploadFormState extends UploadState {

@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen>
               padding: const EdgeInsets.all(15.0),
               color: Colors.blueGrey,
               child: Text(
-                'Hello ${widget.name}',
+                'Hello ${widget.name} 😀',
                 style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,

@@ -5,7 +5,8 @@ class UpdatesScreen extends StatefulWidget {
   _UpdatesScreenState createState() => _UpdatesScreenState();
 }
 
-class _UpdatesScreenState extends State<UpdatesScreen> with AutomaticKeepAliveClientMixin<UpdatesScreen> {
+class _UpdatesScreenState extends State<UpdatesScreen>
+    with AutomaticKeepAliveClientMixin<UpdatesScreen> {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -33,7 +34,8 @@ class _UpdatesScreenState extends State<UpdatesScreen> with AutomaticKeepAliveCl
                 title: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    'Buy Me Coffee :)',
+                    'Buy Me Coffee 😛',
+                    textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 18.0),
                   ),
                 ),
@@ -60,7 +62,6 @@ class BuyMeCoffeePage extends StatelessWidget {
     );
   }
 }
-
 
 class DeveloperInfo extends StatelessWidget {
   @override
@@ -94,7 +95,7 @@ class DeveloperInfo extends StatelessWidget {
                 child: Image.asset('assets/whatsapp.png'),
               ),
               title: Text(
-                '+91 7892137665',
+                '+91 You Know Me 😉',
                 style: TextStyle(fontSize: 20.0),
               ),
               subtitle: Text('WhatsApp'),
@@ -105,4 +106,3 @@ class DeveloperInfo extends StatelessWidget {
     );
   }
 }
-

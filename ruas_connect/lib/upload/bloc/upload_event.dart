@@ -26,11 +26,7 @@ class DescriptionChanged extends UploadEvent {
 }
 
 class Submitted extends UploadEvent {
-  final String title,
-      description,
-      fileName,
-      fileSize,
-      filePath;
+  final String title, description, fileName, fileSize, filePath;
 
   Submitted({
     @required this.title,

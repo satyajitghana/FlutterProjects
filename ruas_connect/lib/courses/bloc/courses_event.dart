@@ -7,13 +7,10 @@ abstract class CoursesEvent extends Equatable {
 }
 
 class LoadCourses extends CoursesEvent {
-
   final String branch;
   final String semester;
 
-  LoadCourses(this.branch, this.semester)
-    : super([branch, semester]);
-
+  LoadCourses(this.branch, this.semester) : super([branch, semester]);
 
   @override
   String toString() => 'Event : { LoadCourses $branch => $semester }';

@@ -40,7 +40,7 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener (
+    return BlocListener(
       bloc: _loginBloc,
       listener: (BuildContext context, LoginState state) {
         if (state.isFailure) {

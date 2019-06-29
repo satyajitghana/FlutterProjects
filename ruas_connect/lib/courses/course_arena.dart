@@ -5,6 +5,8 @@ import 'package:ruas_connect/notes/notes.dart';
 import 'package:ruas_connect/repository/respository.dart';
 import 'package:ruas_connect/upload/upload.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:ruas_connect/assignments/assignments.dart';
+import 'package:ruas_connect/questions/questions.dart';
 
 class CourseArena extends StatefulWidget {
   final String courseCode;
@@ -72,8 +74,12 @@ class _CourseArenaState extends State<CourseArena> {
           NotesScreen(
             courseCode: widget.courseCode,
           ),
-          InnerPage(color: Colors.black26),
-          InnerPage(color: Colors.black26),
+          QuestionsScreen(
+            courseCode: widget.courseCode,
+          ),
+          AssignmentsScreen(
+            courseCode: widget.courseCode,
+          ),
         ],
       ),
       bottomNavigationBar: BottomNavyBar(

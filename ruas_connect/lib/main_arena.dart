@@ -8,6 +8,7 @@ import 'models/models.dart';
 
 import 'courses/courses.dart';
 import 'settings/settings.dart';
+import 'package:ruas_connect/messages/messages.dart';
 
 class MainArenaPage extends StatefulWidget {
   @override
@@ -88,8 +89,11 @@ class _BottomNavigationState extends State<MainArenaPage> {
         onPageChanged: onPageChanged,
         children: <Widget>[
           HomeScreen(name: currentUser.userName),
-          CoursesScreen(),
-          InnerPage(color: Colors.pink),
+          CoursesScreen(
+            branch: currentUser.branch,
+            semester: currentUser.semester,
+          ),
+          MessagesScreen(),
           UpdatesScreen(),
         ],
       ),

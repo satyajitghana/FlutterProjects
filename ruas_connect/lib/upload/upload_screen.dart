@@ -18,7 +18,6 @@ class UploadScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     print('UploadScreen => arenaName : $arenaName, courseCode : $courseCode');
 
     return Scaffold(

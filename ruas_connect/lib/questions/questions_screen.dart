@@ -8,17 +8,17 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ruas_connect/repository/respository.dart';
 
-class NotesScreen extends StatefulWidget {
+class QuestionsScreen extends StatefulWidget {
   final String courseCode;
 
-  const NotesScreen({Key key, this.courseCode}) : super(key: key);
+  const QuestionsScreen({Key key, this.courseCode}) : super(key: key);
 
   @override
-  _NotesScreenState createState() => _NotesScreenState();
+  _QuestionsScreenState createState() => _QuestionsScreenState();
 }
 
-class _NotesScreenState extends State<NotesScreen>
-    with AutomaticKeepAliveClientMixin<NotesScreen> {
+class _QuestionsScreenState extends State<QuestionsScreen>
+    with AutomaticKeepAliveClientMixin<QuestionsScreen> {
   final _scrollController = ScrollController();
   DocumentsBloc _documentsBloc;
 
@@ -28,7 +28,7 @@ class _NotesScreenState extends State<NotesScreen>
   void initState() {
     super.initState();
     _documentsBloc =
-        DocumentsBloc(arenaName: 'notes', courseCode: widget.courseCode)
+        DocumentsBloc(arenaName: 'questions', courseCode: widget.courseCode)
           ..dispatch(LoadDocuments());
   }
 
@@ -37,7 +37,7 @@ class _NotesScreenState extends State<NotesScreen>
     super.build(context);
     return BlocProvider(
       builder: (context) =>
-          DocumentsBloc(arenaName: 'notes', courseCode: widget.courseCode)
+          DocumentsBloc(arenaName: 'questions', courseCode: widget.courseCode)
             ..dispatch(LoadDocuments()),
       child: BlocBuilder(
           bloc: _documentsBloc,
@@ -105,10 +105,10 @@ class _NotesScreenState extends State<NotesScreen>
   bool get wantKeepAlive => true;
 }
 
-//class NotesScreen extends StatelessWidget {
+//class QuestionsScreen extends StatelessWidget {
 //  final String courseCode;
 //
-//  const NotesScreen({Key key, this.courseCode}) : super(key: key);
+//  const QuestionsScreen({Key key, this.courseCode}) : super(key: key);
 //
 //  @override
 //  Widget build(BuildContext context) {

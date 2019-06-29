@@ -19,7 +19,9 @@ class UploadRepository {
         FirebaseStorage.instance.ref().child(uploadLocationWithFileName);
     File toUpload = File(filePath);
     final StorageUploadTask storageUploadTask = storageReference.putFile(
-        toUpload, StorageMetadata(contentType: 'application/pdf', customMetadata: metadata));
+        toUpload,
+        StorageMetadata(
+            contentType: 'application/pdf', customMetadata: metadata));
     await storageUploadTask.onComplete;
   }
 }

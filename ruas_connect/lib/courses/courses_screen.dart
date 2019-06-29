@@ -4,13 +4,20 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ruas_connect/courses/bloc/bloc.dart';
 import 'courses.dart';
+import 'package:ruas_connect/models/models.dart';
+import 'package:ruas_connect/authentication_bloc/bloc.dart' as AuthBloc;
 
 class CoursesScreen extends StatefulWidget {
+  final String branch, semester;
+
+  const CoursesScreen({Key key, this.branch, this.semester}) : super(key: key);
+
   @override
   _CoursesScreenState createState() => _CoursesScreenState();
 }
 
-class _CoursesScreenState extends State<CoursesScreen> with AutomaticKeepAliveClientMixin<CoursesScreen> {
+class _CoursesScreenState extends State<CoursesScreen>
+    with AutomaticKeepAliveClientMixin<CoursesScreen> {
   final CoursesRepository coursesRepository = CoursesRepository();
 
   @override
@@ -18,15 +25,28 @@ class _CoursesScreenState extends State<CoursesScreen> with AutomaticKeepAliveCl
     super.build(context);
     return BlocProvider(
         builder: (context) => CoursesBloc(coursesRepository: coursesRepository),
-        child: CoursesCards());
+        child: CoursesCards(
+          semester: widget.semester,
+          branch: widget.branch,
+        ));
   }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive {
+    UserDetails userDetails =
+        (BlocProvider.of<AuthBloc.AuthenticationBloc>(context).currentState
+                as AuthBloc.Authenticated)
+            .userDetails;
+
+    return (userDetails.semester == widget.semester &&
+        userDetails.branch == widget.branch);
+  }
 }
 
 class CoursesCards extends StatelessWidget {
-  const CoursesCards({Key key}) : super(key: key);
+  const CoursesCards({Key key, this.branch, this.semester}) : super(key: key);
+
+  final String branch, semester;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +56,7 @@ class CoursesCards extends StatelessWidget {
       bloc: _coursesBloc,
       builder: (context, CoursesState state) {
         if (state is Uninitialized) {
-          _coursesBloc.dispatch(LoadCourses('CSE', 'SEMESTER_02'));
+          _coursesBloc.dispatch(LoadCourses(branch, semester));
           return Text('Loading');
         }
 
@@ -67,7 +87,7 @@ class CoursesCards extends StatelessWidget {
 
         if (state is CoursesLoadError) {
           return Center(
-            child: Text('Loading Error'),
+            child: Text('It\'s Lonely in here'),
           );
         }
       },

@@ -149,7 +149,6 @@ class _EditProfileFormState extends State<EditProfileForm> {
                 ),
               );
             BlocProvider.of<AuthenticationBloc>(context).dispatch(LoggedIn());
-
           }
           if (state.isFailure) {
             Scaffold.of(context)
@@ -191,7 +190,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
                         children: <Widget>[
                           TextFormField(
                             controller: _usernameController,
-                            maxLength: 15,
+                            maxLength: 25,
                             keyboardType: TextInputType.text,
                             decoration: InputDecoration(
                               icon: Icon(Icons.title),

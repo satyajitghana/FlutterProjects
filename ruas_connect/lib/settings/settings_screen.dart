@@ -62,9 +62,11 @@ class SettingsScreen extends StatelessWidget {
                           ..showSnackBar(
                             SnackBar(
                               content: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('Reset Password Link Sent to your Email !'),
+                                  Text(
+                                      'Reset Password Link Sent to your Email !'),
                                   Icon(
                                     Icons.done,
                                     color: Colors.green,
