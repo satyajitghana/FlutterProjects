@@ -69,7 +69,9 @@ class _CourseArenaState extends State<CourseArena> {
         controller: _pageController,
 //        onPageChanged: onPageChanged,
         children: <Widget>[
-          NotesScreen(),
+          NotesScreen(
+            courseCode: widget.courseCode,
+          ),
           InnerPage(color: Colors.black26),
           InnerPage(color: Colors.black26),
         ],

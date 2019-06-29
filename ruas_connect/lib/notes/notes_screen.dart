@@ -4,6 +4,9 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ruas_connect/documents_bloc/bloc.dart';
 import 'package:ruas_connect/models/models.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ruas_connect/repository/respository.dart';
 
 class NotesScreen extends StatefulWidget {
   final String courseCode;
@@ -23,7 +26,10 @@ class _NotesScreenState extends State<NotesScreen> {
   @override
   void initState() {
     super.initState();
-    _documentsBloc = BlocProvider.of<DocumentsBloc>(context);
+    _documentsBloc =
+        DocumentsBloc(arenaName: 'notes', courseCode: widget.courseCode)
+          ..dispatch(LoadDocuments());
+//        BlocProvider.of<DocumentsBloc>(context);
   }
 
   @override
@@ -36,8 +42,16 @@ class _NotesScreenState extends State<NotesScreen> {
           bloc: _documentsBloc,
           builder: (context, DocumentsState state) {
             if (state is InitialDocumentsState) {
-              return Center(
-                child: CircularProgressIndicator(),
+              return Container(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            } else if (state is EmptyDocumentsState) {
+              return Container(
+                child: Center(
+                  child: Text('Its Lonely Here'),
+                ),
               );
             } else if (state is LoadedDocumentsState) {
               hasMoreDocuments = state.hasMoreDocuments;
@@ -46,11 +60,16 @@ class _NotesScreenState extends State<NotesScreen> {
                 child: ListView.builder(
                     itemCount: _calculateListItemCount(state),
                     itemBuilder: (context, index) {
-                      return index >= state.docs.length
-                          ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : NoteListItem(documentUploaded: DocumentUploaded( document: state.docs[index].data));
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: index >= state.docs.length
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : NoteListItem(
+                                documentUploaded: DocumentUploaded(
+                                    document: state.docs[index].data)),
+                      );
                     }),
               );
             }
@@ -105,7 +124,6 @@ class _NotesScreenState extends State<NotesScreen> {
 //}
 
 class NoteListItem extends StatelessWidget {
-
   final DocumentUploaded documentUploaded;
 
   const NoteListItem({Key key, this.documentUploaded}) : super(key: key);
@@ -167,10 +185,21 @@ class NoteListItem extends StatelessWidget {
                     Column(
                       children: <Widget>[
                         RaisedButton.icon(
-                          onPressed: () {},
+                          onPressed: () async {
+                            final ref = Firestore.instance
+                                .collection(documentUploaded.arenaName)
+                                .document(documentUploaded.courseCode)
+                                .collection('uploaded_files')
+                                .document(documentUploaded.uuid)
+                                .collection('liked_by')
+                                .document(
+                                    (await UserRepository.getCurrentUser).uid);
+                            await ref.setData({'liked':true});
+                          },
                           color: Colors.transparent,
                           icon: Icon(Icons.thumb_up),
-                          label: Text(documentUploaded.stats['like_count']),
+                          label:
+                              Text('${documentUploaded.stats['like_count']}'),
                         ),
                         Text('Upvote'),
                       ],
@@ -178,10 +207,21 @@ class NoteListItem extends StatelessWidget {
                     Column(
                       children: <Widget>[
                         RaisedButton.icon(
-                          onPressed: () {},
+                          onPressed: () async {
+                            // fuken works !!!
+                            await CloudFunctions.instance
+                                .getHttpsCallable(
+                                    functionName: 'updateViewCount')
+                                .call({
+                              'arenaName': documentUploaded.arenaName,
+                              'courseCode': documentUploaded.courseCode,
+                              'uuid': documentUploaded.uuid
+                            });
+                          },
                           color: Colors.transparent,
                           icon: Icon(Icons.info_outline),
-                          label: Text(documentUploaded.stats['view_count']),
+                          label:
+                              Text('${documentUploaded.stats['view_count']}'),
                         ),
                         Text('View'),
                       ],
@@ -190,9 +230,20 @@ class NoteListItem extends StatelessWidget {
                       children: <Widget>[
                         RaisedButton.icon(
                           color: Colors.transparent,
-                          onPressed: () {},
+                          onPressed: () async {
+                            // fuken works !!!
+                            await CloudFunctions.instance
+                                .getHttpsCallable(
+                                    functionName: 'updateDownloadCount')
+                                .call({
+                              'arenaName': documentUploaded.arenaName,
+                              'courseCode': documentUploaded.courseCode,
+                              'uuid': documentUploaded.uuid
+                            });
+                          },
                           icon: Icon(Icons.file_download),
-                          label: Text(documentUploaded.stats['download_count']),
+                          label: Text(
+                              '${documentUploaded.stats['download_count']}'),
                         ),
                         Text('Download'),
                       ],

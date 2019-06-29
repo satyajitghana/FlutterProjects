@@ -9,7 +9,7 @@ class DocumentUploaded {
   String uploaderUid;
   String uploaderUsername;
   String uuid;
-  Map<String, dynamic> stats;
+  Map<dynamic, dynamic> stats;
 
   DocumentUploaded({Map<String, dynamic> document}) {
     this.arenaName = document['arenaName'];

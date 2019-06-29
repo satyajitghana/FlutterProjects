@@ -13,6 +13,8 @@ class CoursesRepository {
         .document(courseCode)
         .collection('uploaded_files')
         .reference();
+
+    print('arena : $arena, courseCode : $courseCode');
     final Query query =
         docsRef.orderBy('stats.like_count', descending: true).limit(N);
     return (await query.getDocuments()).documents;
