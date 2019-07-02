@@ -95,7 +95,7 @@ class DeveloperInfo extends StatelessWidget {
                 child: Image.asset('assets/whatsapp.png'),
               ),
               title: Text(
-                '+91 You Know Me 😉',
+                '+91 7892137665',
                 style: TextStyle(fontSize: 20.0),
               ),
               subtitle: Text('WhatsApp'),
