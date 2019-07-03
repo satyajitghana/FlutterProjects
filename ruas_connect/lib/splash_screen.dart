@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({Key key}) : super(key: key);
@@ -7,15 +8,24 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-          child: Column(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: Image.asset('assets/ruas_logo.png', height: 200),
-          ),
-          Text('Loading !')
-        ],
-      )),
+        child: Stack(
+          alignment: Alignment.center,
+          children: <Widget>[
+            Positioned(
+              child: SpinKitPulse(
+                color: Colors.red,
+                size: 400.0,
+              ),
+            ),
+            Positioned(
+              child: Image.asset(
+                'assets/ruas_logo.png',
+                height: 200,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

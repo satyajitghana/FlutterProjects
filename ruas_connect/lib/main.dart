@@ -68,6 +68,7 @@ class App extends StatelessWidget {
               return SplashScreen();
             }
             if (state is Authenticated) {
+//              return SplashScreen();
               return MainArenaPage();
             }
             if (state is Unauthenticated) {
