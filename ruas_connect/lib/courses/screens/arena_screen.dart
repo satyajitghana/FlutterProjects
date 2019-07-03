@@ -10,18 +10,18 @@ import 'package:ruas_connect/repository/respository.dart';
 import 'package:url_launcher/url_launcher.dart' as URLLauncher;
 import 'package:firebase_storage/firebase_storage.dart';
 
-class NotesScreen extends StatefulWidget {
+class ArenaScreen extends StatefulWidget {
   final String courseCode;
   final String arenaName;
 
-  const NotesScreen({Key key, this.courseCode, this.arenaName}) : super(key: key);
+  const ArenaScreen({Key key, this.courseCode, this.arenaName}) : super(key: key);
 
   @override
-  _NotesScreenState createState() => _NotesScreenState();
+  _ArenaScreenState createState() => _ArenaScreenState();
 }
 
-class _NotesScreenState extends State<NotesScreen>
-    with AutomaticKeepAliveClientMixin<NotesScreen> {
+class _ArenaScreenState extends State<ArenaScreen>
+    with AutomaticKeepAliveClientMixin<ArenaScreen> {
   final _scrollController = ScrollController();
   DocumentsBloc _documentsBloc;
 
@@ -31,8 +31,8 @@ class _NotesScreenState extends State<NotesScreen>
   void initState() {
     super.initState();
     _documentsBloc =
-        DocumentsBloc(arenaName: widget.arenaName, courseCode: widget.courseCode)
-          ..dispatch(LoadDocuments());
+    DocumentsBloc(arenaName: widget.arenaName, courseCode: widget.courseCode)
+      ..dispatch(LoadDocuments());
   }
 
   @override
@@ -40,8 +40,8 @@ class _NotesScreenState extends State<NotesScreen>
     super.build(context);
     return BlocProvider(
       builder: (context) =>
-          DocumentsBloc(arenaName: widget.arenaName, courseCode: widget.courseCode)
-            ..dispatch(LoadDocuments()),
+      DocumentsBloc(arenaName: widget.arenaName, courseCode: widget.courseCode)
+        ..dispatch(LoadDocuments()),
       child: BlocBuilder(
           bloc: _documentsBloc,
           builder: (context, DocumentsState state) {
@@ -68,13 +68,13 @@ class _NotesScreenState extends State<NotesScreen>
                       padding: const EdgeInsets.all(8.0),
                       child: index >= state.docs.length
                           ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : NoteListItem(
-                              docRef: state.docs[index].reference,
-                              documentUploaded: DocumentUploaded(
-                                  document: state.docs[index].data),
-                            ),
+                        child: CircularProgressIndicator(),
+                      )
+                          : ArenaListItem(
+                        docRef: state.docs[index].reference,
+                        documentUploaded: DocumentUploaded(
+                            document: state.docs[index].data),
+                      ),
                     );
                   },
                 ),
@@ -111,11 +111,11 @@ class _NotesScreenState extends State<NotesScreen>
   bool get wantKeepAlive => true;
 }
 
-class NoteListItem extends StatelessWidget {
+class ArenaListItem extends StatelessWidget {
   final DocumentUploaded documentUploaded;
   final DocumentReference docRef;
 
-  const NoteListItem(
+  const ArenaListItem(
       {Key key, this.documentUploaded, this.docRef})
       : super(key: key);
 
@@ -219,24 +219,26 @@ class NoteListItem extends StatelessWidget {
                       children: <Widget>[
                         RaisedButton.icon(
                           onPressed: () async {
+                            print('Upload Location : ${documentUploaded.uploadLocation}');
+
                             final fileUrl = await FirebaseStorage.instance.ref().child(documentUploaded.uploadLocation).getDownloadURL();
                             URLLauncher.launch(fileUrl);
                             // fuken works !!!
+
                             await CloudFunctions.instance
                                 .getHttpsCallable(
-                                    functionName: 'updateViewCount')
+                                functionName: 'updateViewCount')
                                 .call({
                               'arenaName': documentUploaded.arenaName,
                               'courseCode': documentUploaded.courseCode,
                               'uuid': documentUploaded.uuid
                             });
 
-
                           },
                           color: Colors.blue,
                           icon: Icon(Icons.info_outline),
                           label:
-                              Text('${documentUploaded.stats['view_count']}'),
+                          Text('${documentUploaded.stats['view_count']}'),
                         ),
                         Text('View'),
                       ],

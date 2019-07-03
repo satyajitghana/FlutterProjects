@@ -98,6 +98,14 @@ class UserRepository {
     return FirebaseAuth.instance.sendPasswordResetEmail(email: email);
   }
 
+  Future<void> sendVerificationEmail() async {
+    return (await _firebaseAuth.currentUser()).sendEmailVerification();
+  }
+
+  Future<bool> get isEmailVerified async {
+    return (await _firebaseAuth.currentUser()).isEmailVerified;
+  }
+
   // remove the uid from here or remove the currentUser
   Future<void> updateProfileDetails(
       String uid, String userName, String branch, String semester) async {

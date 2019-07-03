@@ -92,13 +92,13 @@ class DeveloperInfo extends StatelessWidget {
             ListTile(
               leading: Padding(
                 padding: const EdgeInsets.all(4.0),
-                child: Image.asset('assets/whatsapp.png'),
+                child: Image.asset('assets/gmail.png'),
               ),
               title: Text(
-                '+91 7892137665',
-                style: TextStyle(fontSize: 20.0),
+                'shadowleaf.satyajit@gmail.com',
+                style: TextStyle(fontSize: 15.0),
               ),
-              subtitle: Text('WhatsApp'),
+              subtitle: Text('Gmail'),
             ),
           ],
         ),

@@ -83,6 +83,13 @@ class _LoginFormState extends State<LoginForm> {
             child: Form(
               child: ListView(
                 children: <Widget>[
+                  ListTile(
+                    title: Text(
+                      'RUAS Connect',
+                      style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 20),
                     child: Image.asset('assets/ruas_logo.png', height: 200),

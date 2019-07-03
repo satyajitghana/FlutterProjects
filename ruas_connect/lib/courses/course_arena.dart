@@ -7,6 +7,7 @@ import 'package:ruas_connect/upload/upload.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:ruas_connect/assignments/assignments.dart';
 import 'package:ruas_connect/questions/questions.dart';
+import 'screens/screens.dart';
 
 class CourseArena extends StatefulWidget {
   final String courseCode;
@@ -71,14 +72,17 @@ class _CourseArenaState extends State<CourseArena> {
         controller: _pageController,
 //        onPageChanged: onPageChanged,
         children: <Widget>[
-          NotesScreen(
+          ArenaScreen(
             courseCode: widget.courseCode,
+            arenaName: 'notes',
           ),
-          QuestionsScreen(
+          ArenaScreen(
             courseCode: widget.courseCode,
+            arenaName: 'questions',
           ),
-          AssignmentsScreen(
+          ArenaScreen(
             courseCode: widget.courseCode,
+            arenaName: 'assignments',
           ),
         ],
       ),

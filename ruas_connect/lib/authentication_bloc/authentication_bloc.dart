@@ -34,7 +34,11 @@ class AuthenticationBloc
       final isSignedIn = await _userRepository.isSignedIn();
       if (isSignedIn) {
         final UserDetails userDetails = await _userRepository.getUserDetails();
-        yield Authenticated(userDetails);
+        final bool isEmailVerified = await _userRepository.isEmailVerified;
+        yield Authenticated(
+          userDetails: userDetails,
+          isEmailVerified: isEmailVerified,
+        );
       } else {
         yield Unauthenticated();
       }
@@ -47,7 +51,11 @@ class AuthenticationBloc
     try {
       // if the document does not exist then dispatch the settings page
       final UserDetails userDetails = await _userRepository.getUserDetails();
-      yield Authenticated(userDetails);
+      final bool isEmailVerfiied = await _userRepository.isEmailVerified;
+      yield Authenticated(
+        userDetails: userDetails,
+        isEmailVerified: isEmailVerfiied,
+      );
     } on UserDetailsFieldException {
       print('Exception : { found empty field } ');
       final uid = await _userRepository.getUid();

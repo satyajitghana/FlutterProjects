@@ -14,8 +14,9 @@ class Uninitialized extends AuthenticationState {
 
 class Authenticated extends AuthenticationState {
   final UserDetails userDetails;
+  final bool isEmailVerified;
 
-  Authenticated(this.userDetails) : super([userDetails]);
+  Authenticated({ this.userDetails, this.isEmailVerified }) : super([userDetails, isEmailVerified]);
 
   @override
   String toString() =>

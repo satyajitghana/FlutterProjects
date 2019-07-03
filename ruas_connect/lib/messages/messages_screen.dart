@@ -8,6 +8,10 @@ import 'package:bloc/bloc.dart';
 import 'package:ruas_connect/authentication_bloc/bloc.dart';
 
 class MessagesScreen extends StatefulWidget {
+  final String branch, semester;
+
+  const MessagesScreen({Key key, this.branch, this.semester}) : super(key: key);
+
   @override
   _MessagesScreenState createState() => _MessagesScreenState();
 }
@@ -17,7 +21,7 @@ class _MessagesScreenState extends State<MessagesScreen>
   TextEditingController _textEditingController;
   bool _isComposingMessage;
 
-  final _reference = FirebaseDatabase.instance.reference().child('messages');
+  DatabaseReference _reference;
 
   UserDetails currentUser;
 
@@ -26,9 +30,13 @@ class _MessagesScreenState extends State<MessagesScreen>
     super.initState();
     _textEditingController = TextEditingController();
     _isComposingMessage = false;
-    currentUser = (BlocProvider.of<AuthenticationBloc>(context).currentState
-            as Authenticated)
+    currentUser = (BlocProvider
+        .of<AuthenticationBloc>(context)
+        .currentState
+    as Authenticated)
         .userDetails;
+    _reference = FirebaseDatabase.instance.reference().child(
+        '${widget.branch}/${widget.semester}/messages');
   }
 
   @override
@@ -56,7 +64,9 @@ class _MessagesScreenState extends State<MessagesScreen>
           ),
           Divider(height: 1.0),
           Container(
-            decoration: new BoxDecoration(color: Theme.of(context).cardColor),
+            decoration: new BoxDecoration(color: Theme
+                .of(context)
+                .cardColor),
             child: _buildTextComposer(),
           )
         ],
@@ -77,8 +87,12 @@ class _MessagesScreenState extends State<MessagesScreen>
     return new IconTheme(
       data: new IconThemeData(
         color: _isComposingMessage
-            ? Theme.of(context).accentColor
-            : Theme.of(context).disabledColor,
+            ? Theme
+            .of(context)
+            .accentColor
+            : Theme
+            .of(context)
+            .disabledColor,
       ),
       child: new Container(
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -94,7 +108,7 @@ class _MessagesScreenState extends State<MessagesScreen>
                 },
                 onSubmitted: _textMessageSubmitted,
                 decoration:
-                    InputDecoration.collapsed(hintText: "Send a message"),
+                InputDecoration.collapsed(hintText: "Send a message"),
               ),
             ),
             Container(

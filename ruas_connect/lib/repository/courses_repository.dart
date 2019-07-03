@@ -88,12 +88,13 @@ class CoursesRepository {
       'arenaName': arena,
       'uuid': uuid,
       'fileName': uploadedFile.filename,
+      'uploadLocation': '$arena/$courseCode/uploaded_files/$uuid.pdf',
     };
     await uploadRepository.uploadDocument(
         filename: '$uuid.pdf',
         filePath: filePath,
         metadata: metadata,
         uploadLocationWithFileName:
-            'notes/$courseCode/uploaded_files/$uuid.pdf');
+            '$arena/$courseCode/uploaded_files/$uuid.pdf');
   }
 }

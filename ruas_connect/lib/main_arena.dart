@@ -93,7 +93,10 @@ class _BottomNavigationState extends State<MainArenaPage> {
             branch: currentUser.branch,
             semester: currentUser.semester,
           ),
-          MessagesScreen(),
+          MessagesScreen(
+            branch: currentUser.branch,
+            semester: currentUser.semester,
+          ),
           UpdatesScreen(),
         ],
       ),
