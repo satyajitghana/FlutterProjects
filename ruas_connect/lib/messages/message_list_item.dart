@@ -38,7 +38,12 @@ class MessageListItem extends StatelessWidget {
                     fontWeight: FontWeight.bold)),
             Container(
               margin: const EdgeInsets.only(top: 5.0),
-              child: Text(messageSnapshot.value['text']),
+              child: messageSnapshot.value['imageUrl'] != null
+                  ? Image.network(
+                      messageSnapshot.value['imageUrl'],
+                      width: 250.0,
+                    )
+                  : Text(messageSnapshot.value['text']),
             ),
           ],
         ),
@@ -53,13 +58,18 @@ class MessageListItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(messageSnapshot.value['senderName'],
-                style: new TextStyle(
+                style: TextStyle(
                     fontSize: 14.0,
                     color: Colors.redAccent,
                     fontWeight: FontWeight.bold)),
             Container(
               margin: const EdgeInsets.only(top: 5.0),
-              child: Text(messageSnapshot.value['text']),
+              child: messageSnapshot.value['imageUrl'] != null
+                  ? new Image.network(
+                      messageSnapshot.value['imageUrl'],
+                      width: 250.0,
+                    )
+                  : Text(messageSnapshot.value['text']),
             ),
           ],
         ),

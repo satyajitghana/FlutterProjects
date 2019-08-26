@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
@@ -6,6 +9,7 @@ import 'package:ruas_connect/models/models.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:ruas_connect/authentication_bloc/bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 class MessagesScreen extends StatefulWidget {
   final String branch, semester;
@@ -98,6 +102,27 @@ class _MessagesScreenState extends State<MessagesScreen>
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: new Row(
           children: <Widget>[
+            Container(
+              margin: new EdgeInsets.symmetric(horizontal: 4.0),
+              child: new IconButton(
+                  icon: new Icon(
+                    Icons.photo_camera,
+                    color: Theme.of(context).accentColor,
+                  ),
+                  onPressed: () async {
+                    File imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+                    int timestamp = new DateTime.now().millisecondsSinceEpoch;
+                    StorageReference storageReference = FirebaseStorage
+                        .instance
+                        .ref()
+                        .child("chat/img_" + timestamp.toString() + ".jpg");
+                    StorageUploadTask uploadTask =
+                    storageReference.put(imageFile);
+                    String downloadUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
+                    _sendMessage(
+                        messageText: null, imageUrl: downloadUrl);
+                  }),
+            ),
             Flexible(
               child: new TextField(
                 controller: _textEditingController,
@@ -136,6 +161,7 @@ class _MessagesScreenState extends State<MessagesScreen>
       'text': messageText,
       'email': currentUser.email,
       'senderName': currentUser.userName,
+      'imageUrl': imageUrl,
     });
   }
 

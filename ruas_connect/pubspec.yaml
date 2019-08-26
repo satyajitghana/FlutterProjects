@@ -53,6 +53,9 @@ dev_dependencies:
   # UUID Generator
   uuid: ^2.0.2
 
+  # Image Picker
+  image_picker: ^0.6.0+10
+
   # Launcher Icon
   flutter_launcher_icons: ^0.7.2+1
 
